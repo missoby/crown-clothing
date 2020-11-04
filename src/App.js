@@ -8,15 +8,25 @@ import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up
 import Header from "./components/header/header.component";
 
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
-import { setCurrentUser } from "./redux/user/user.actions";
+import { setCurrentUserAction } from "./redux/user/user.actions";
 
 import "./App.css";
 
 class App extends React.Component {
+  /* constructor() {
+    super();
+
+    this.state = {
+      currentUser: null
+    };
+  }*/
+
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props;
+    // a lieu d'ecrire à chaque fois this.props.setCurrentUesrState
+    const { setCurrentUserState } = this.props;
+
     // onAuthStateChanged : observateur sur l'objet Auth
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
@@ -24,7 +34,9 @@ class App extends React.Component {
 
         //snapshop of data venu du createUserProfileDocument et stocker la dans state
         userRef.onSnapshot((snapShot) => {
-          setCurrentUser({
+          /* this.setState({
+            currentUser: { */
+          setCurrentUserState({
             currentUser: {
               id: snapShot.id,
               ...snapShot.data(),
@@ -32,7 +44,8 @@ class App extends React.Component {
           });
         });
       } else {
-        setCurrentUser(userAuth);
+        // this.setState({ currentUser: userAuth });
+        setCurrentUserState(userAuth);
       }
     });
   }
@@ -44,10 +57,12 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        {/*<Header currentUser={this.state.currentUser} />*/}
         <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
+          {/* redirect to home une fois connecté */}
           <Route
             exact
             path="/signin"
@@ -64,12 +79,24 @@ class App extends React.Component {
     );
   }
 }
+
+/* fonction qui va faire correspendre des valeur dans l'etat (state) 
+   dans notre cas c'est "user" à des propriété (props) du composant. 
+   
+   As the first argument passed in to connect, mapStateToProps is used 
+   for selecting the part of the data from the store that the connected component needs. It’s frequently referred to as just mapState for short.
+   It is called every time the store state changes.
+   It receives the entire store state, and should return an object of data this component needs.
+*/
+
 const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser,
+  currentUser: user.currentUser
 });
+/* fonction dispatche qui va envoyer l'information a l'action
+  user =  currentUser: { id: snapShot.id,...snapShot.data() },*/
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  setCurrentUserState: (user) => dispatch(setCurrentUserAction(user)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
