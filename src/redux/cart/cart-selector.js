@@ -14,14 +14,16 @@ const SelectCart = (state) => state.cart;
     (cart, user) => 
 
     ===> memorize selector
-
 */
+
 export const selectCartItems = createSelector(
   [SelectCart],
   (cart) => cart.cartItems
 );
 
-export const SelectCartItemsCount = createSelector(
+export const selectHidden = createSelector([SelectCart], (cart) => cart.hidden);
+
+export const selectCartItemsCount = createSelector(
   [selectCartItems],
   (cartItems) =>
     cartItems.reduce(
@@ -29,4 +31,12 @@ export const SelectCartItemsCount = createSelector(
         accumulatedQuantitiy + cartItem.quantity,
       0
     )
+);
+
+export const selectCartTotal = createSelector([selectCartItems], (cartItems) =>
+  cartItems.reduce(
+    (accumulatedTotale, cartItem) =>
+      accumulatedTotale + cartItem.quantity * cartItem.price,
+    0
+  )
 );
