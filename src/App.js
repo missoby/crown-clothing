@@ -50,6 +50,11 @@ class App extends React.Component {
       } else {
         // this.setState({ currentUser: userAuth });
         setCurrentUserState(userAuth);
+
+        /* pour enregistrer les données du shop dans firebase
+            addCollectionAndDocuments('collections', collectionsArray.map(({ title, items }) => ({ title, items })));
+        */
+
       }
     });
   }
@@ -75,8 +80,8 @@ class App extends React.Component {
               this.props.currentUser ? (
                 <Redirect to="/" />
               ) : (
-                <SignInAndSignUpPage />
-              )
+                  <SignInAndSignUpPage />
+                )
             }
           />
         </Switch>
@@ -97,7 +102,7 @@ class App extends React.Component {
     });
 */
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
+  currentUser: selectCurrentUser
 });
 
 /* fonction dispatche qui va envoyer l'information a l'action
